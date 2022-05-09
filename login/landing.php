@@ -1,13 +1,5 @@
 <?php
-
-@include 'config.php';
-
 session_start();
-
-if(!isset($_SESSION['nombre_admin'])){
-   header('location:login.php');
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -29,9 +21,20 @@ if(!isset($_SESSION['nombre_admin'])){
    <div class="content">
       <h3>hola <span>admin</span></h3>
       <h1>Bienvenido!! <span><?php echo $_SESSION['nombre_admin'] ?></span></h1>
-      <p>Esta es la pagina de administrador</p>
-      <a href="login.php" class="btn">Iniciar sesion</a>
-      <a href="registrar.php" class="btn">Registrarme</a>
+
+      <?php
+         if(isset($_SESSION['nombre_admin'])){
+            echo ('<p>Esta es la pagina de administrador</p>');
+         }
+         else{
+            echo ('<p>Esta es la pagina de usuario</p>');
+         }
+      ?>
+      <?php if(isset($_SESSION['nombre_admin'])) : ?>
+         <a href="../menu/adminpanel.php" class="btn">Agregar Productos</a>
+      <?php endif ?>
+
+      <a href="../menu/products.php" class="btn">Comprar</a>
       <a href="logout.php" class="btn">Cerrar sesion</a>
    </div>
 

@@ -1,12 +1,18 @@
+<?php 
+   session_start();
+?>
 <header class="header">
 
    <div class="flex">
 
-      <a href="#" class="logo">foodies</a>
+      <a href="#" class="logo">FoodToGo</a>
 
       <nav class="navbar">
-         <a href="adminpanel.php">add products</a>
-         <a href="products.php">view products</a>
+         <?php if(isset($_SESSION['nombre_admin'])) : ?>
+            <a href="../menu/adminpanel.php">Agregar Productos</a>
+         <?php endif ?>
+         <a href="products.php">Ver Productos</a>
+         <a href="../login/logout.php">Cerrar sesion</a>
       </nav>
 
       <?php
@@ -16,7 +22,7 @@
 
       ?>
 
-      <a href="cart.php" class="cart">cart <span><?php echo $row_count; ?></span> </a>
+      <a href="cart.php" class="cart">Carrito <span><?php echo $row_count; ?></span> </a>
 
       <div id="menu-btn" class="fas fa-bars"></div>
 

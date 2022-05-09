@@ -1,7 +1,14 @@
 <?php
 
-@include 'config.php';
+@include '../config.php';
 
+session_start();
+if(!isset($_SESSION['nombre_admin'])){
+   $host  = $_SERVER['HTTP_HOST'];
+   $uri   = rtrim(dirname($_SERVER['PHP_HOST']), '/\\');
+   $extra = 'login/landing.php';
+   header("Location: http://$host$uri/$extra");
+}
 if(isset($_POST['add_product'])){
    $p_name = $_POST['p_name'];
    $p_price = $_POST['p_price'];
@@ -13,9 +20,9 @@ if(isset($_POST['add_product'])){
 
    if($insert_query){
       move_uploaded_file($p_image_tmp_name, $p_image_folder);
-      $message[] = 'product add succesfully';
+      $message[] = 'product agregado exitosamente';
    }else{
-      $message[] = 'could not add the product';
+      $message[] = 'no se pudo agregar el producto';
    }
 };
 
@@ -24,10 +31,10 @@ if(isset($_GET['delete'])){
    $delete_query = mysqli_query($conn, "DELETE FROM `products` WHERE id = $delete_id ") or die('query failed');
    if($delete_query){
       header('location:adminpanel.php');
-      $message[] = 'product has been deleted';
+      $message[] = 'product eliminado';
    }else{
       header('location:adminpanel.php');
-      $message[] = 'product could not be deleted';
+      $message[] = 'product no pudo ser eliminado';
    };
 };
 
@@ -43,10 +50,10 @@ if(isset($_POST['update_product'])){
 
    if($update_query){
       move_uploaded_file($update_p_image_tmp_name, $update_p_image_folder);
-      $message[] = 'product updated succesfully';
+      $message[] = 'producto actualizado exitosamente';
       header('location:adminpanel.php');
    }else{
-      $message[] = 'product could not be updated';
+      $message[] = 'producto no pudo ser actualizado';
       header('location:adminpanel.php');
    }
 
@@ -88,11 +95,11 @@ if(isset($message)){
 <section>
 
 <form action="" method="post" class="add-product-form" enctype="multipart/form-data">
-   <h3>add a new product</h3>
-   <input type="text" name="p_name" placeholder="enter the product name" class="box" required>
-   <input type="number" name="p_price" min="0" placeholder="enter the product price" class="box" required>
+   <h3>Agregar nuevo producto</h3>
+   <input type="text" name="p_name" placeholder="Ingresa el nombre del producto" class="box" required>
+   <input type="number" name="p_price" min="0" placeholder="Ingresa el precio del producto" class="box" required>
    <input type="file" name="p_image" accept="image/png, image/jpg, image/jpeg" class="box" required>
-   <input type="submit" value="add the product" name="add_product" class="btn">
+   <input type="submit" value="Agregar" name="add_product" class="btn">
 </form>
 
 </section>
@@ -102,10 +109,10 @@ if(isset($message)){
    <table>
 
       <thead>
-         <th>product image</th>
-         <th>product name</th>
-         <th>product price</th>
-         <th>action</th>
+         <th>Imagen de Producto</th>
+         <th>Nombre</th>
+         <th>Precio</th>
+         <th>Accion</th>
       </thead>
 
       <tbody>
@@ -119,17 +126,17 @@ if(isset($message)){
          <tr>
             <td><img src="uploaded_img/<?php echo $row['image']; ?>" height="100" alt=""></td>
             <td><?php echo $row['name']; ?></td>
-            <td>$<?php echo $row['price']; ?>/-</td>
+            <td>$<?php echo $row['price']; ?>MXN</td>
             <td>
-               <a href="adminpanel.php?delete=<?php echo $row['id']; ?>" class="delete-btn" onclick="return confirm('are your sure you want to delete this?');"> <i class="fas fa-trash"></i> delete </a>
-               <a href="adminpanel.php?edit=<?php echo $row['id']; ?>" class="option-btn"> <i class="fas fa-edit"></i> update </a>
+               <a href="adminpanel.php?delete=<?php echo $row['id']; ?>" class="delete-btn" onclick="return confirm('¿Estas seguro de eliminar esto?');"> <i class="fas fa-trash"></i> Eliminar </a>
+               <a href="adminpanel.php?edit=<?php echo $row['id']; ?>" class="option-btn"> <i class="fas fa-edit"></i> Actualizar </a>
             </td>
          </tr>
 
          <?php
             };    
             }else{
-               echo "<div class='empty'>no product added</div>";
+               echo "<div class='empty'>ningun producto agregado</div>";
             };
          ?>
       </tbody>

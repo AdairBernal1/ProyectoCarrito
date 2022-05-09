@@ -1,19 +1,16 @@
 <?php
 
-@include 'config.php';
+@include '../config.php';
+
+session_start();
 
 if(isset($_POST['order_btn'])){
 
    $name = $_POST['name'];
    $number = $_POST['number'];
-   $email = $_POST['email'];
    $method = $_POST['method'];
-   $flat = $_POST['flat'];
-   $street = $_POST['street'];
-   $city = $_POST['city'];
-   $state = $_POST['state'];
-   $country = $_POST['country'];
-   $pin_code = $_POST['pin_code'];
+   $calle = $_POST['calle'];
+   $colonia = $_POST['colonia'];
 
    $cart_query = mysqli_query($conn, "SELECT * FROM `cart`");
    $price_total = 0;
@@ -26,26 +23,24 @@ if(isset($_POST['order_btn'])){
    };
 
    $total_product = implode(', ',$product_name);
-   $detail_query = mysqli_query($conn, "INSERT INTO `order`(name, number, email, method, flat, street, city, state, country, pin_code, total_products, total_price) VALUES('$name','$number','$email','$method','$flat','$street','$city','$state','$country','$pin_code','$total_product','$price_total')") or die('query failed');
+   $detail_query = mysqli_query($conn, "INSERT INTO `order`(name, number, method, calle, colonia, total_products, total_price) VALUES('$name','$number','$method','$calle','$colonia','$total_product','$price_total')") or die('query failed');
 
    if($cart_query && $detail_query){
       echo "
       <div class='order-message-container'>
       <div class='message-container'>
-         <h3>thank you for shopping!</h3>
+         <h3>¡Gracias por tu compra!</h3>
          <div class='order-detail'>
             <span>".$total_product."</span>
-            <span class='total'> total : $".$price_total."/-  </span>
+            <span class='total'> total : $".$price_total."MXN  </span>
          </div>
          <div class='customer-details'>
-            <p> your name : <span>".$name."</span> </p>
-            <p> your number : <span>".$number."</span> </p>
-            <p> your email : <span>".$email."</span> </p>
-            <p> your address : <span>".$flat.", ".$street.", ".$city.", ".$state.", ".$country." - ".$pin_code."</span> </p>
-            <p> your payment mode : <span>".$method."</span> </p>
-            <p>(*pay when product arrives*)</p>
+            <p> Tu nombre : <span>".$name."</span> </p>
+            <p> Tu numero : <span>".$number."</span> </p>
+            <p> Tu forma de pago : <span>".$method."</span> </p>
+            <p>(*pago efectivo*)</p>
          </div>
-            <a href='products.php' class='btn'>continue shopping</a>
+            <a href='products.php' class='btn'>Seguir comprando</a>
          </div>
       </div>
       ";
@@ -78,7 +73,7 @@ if(isset($_POST['order_btn'])){
 
 <section class="checkout-form">
 
-   <h1 class="heading">complete your order</h1>
+   <h1 class="heading">Completa tu orden</h1>
 
    <form action="" method="post">
 
@@ -96,59 +91,39 @@ if(isset($_POST['order_btn'])){
       <?php
          }
       }else{
-         echo "<div class='display-order'><span>your cart is empty!</span></div>";
+         echo "<div class='display-order'><span>¡Tu carro esta vacio!</span></div>";
       }
       ?>
-      <span class="grand-total"> grand total : $<?= $grand_total; ?>/- </span>
+      <span class="grand-total"> total : $<?= $grand_total; ?>MXN </span>
    </div>
 
       <div class="flex">
          <div class="inputBox">
-            <span>your name</span>
-            <input type="text" placeholder="enter your name" name="name" required>
+            <span>Nombre de recipiente</span>
+            <input type="text" placeholder="Ingresa tu nombre" name="name" required>
          </div>
          <div class="inputBox">
-            <span>your number</span>
-            <input type="number" placeholder="enter your number" name="number" required>
+            <span>Numero de telefono</span>
+            <input type="number" placeholder="Ingresa tu numero de telefono" name="number" required>
          </div>
          <div class="inputBox">
-            <span>your email</span>
-            <input type="email" placeholder="enter your email" name="email" required>
-         </div>
-         <div class="inputBox">
-            <span>payment method</span>
+            <span>Forma de pago</span>
             <select name="method">
-               <option value="cash on delivery" selected>cash on devlivery</option>
-               <option value="credit cart">credit cart</option>
-               <option value="paypal">paypal</option>
+               <option value="pago en efectivo" selected>Pago en efectivo</option>
+               <option value="tarjeta">Tarjeta</option>
+               <option value="paypal">Paypal</option>
             </select>
          </div>
          <div class="inputBox">
-            <span>address line 1</span>
-            <input type="text" placeholder="e.g. flat no." name="flat" required>
+            <span>Direccion 1</span>
+            <input type="text" placeholder="ej. Calle Marina Nacional #1515" name="calle" required>
          </div>
          <div class="inputBox">
-            <span>address line 2</span>
-            <input type="text" placeholder="e.g. street name" name="street" required>
-         </div>
-         <div class="inputBox">
-            <span>city</span>
-            <input type="text" placeholder="e.g. mumbai" name="city" required>
-         </div>
-         <div class="inputBox">
-            <span>state</span>
-            <input type="text" placeholder="e.g. maharashtra" name="state" required>
-         </div>
-         <div class="inputBox">
-            <span>country</span>
-            <input type="text" placeholder="e.g. india" name="country" required>
-         </div>
-         <div class="inputBox">
-            <span>pin code</span>
-            <input type="text" placeholder="e.g. 123456" name="pin_code" required>
+            <span>Direccion 2 (Opcional)</span>
+            <input type="text" placeholder="ej. Colonia 72" name="colonia" >
          </div>
       </div>
-      <input type="submit" value="order now" name="order_btn" class="btn">
+      <input type="submit" value="Ordenar" name="order_btn" class="btn">
    </form>
 
 </section>

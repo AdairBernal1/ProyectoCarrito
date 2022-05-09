@@ -1,6 +1,6 @@
 <?php
 
-@include 'config.php';
+@include '../config.php';
 
 session_start();
 
@@ -12,7 +12,7 @@ if(isset($_POST['submit'])){
    $cpass = md5($_POST['cpassword']);
    $user_type = $_POST['user_type'];
 
-   $select = " SELECT * FROM user_form WHERE email = '$email' && password = '$pass' ";
+   $select = " SELECT * FROM users WHERE email = '$email' && password = '$pass' ";
 
    $result = mysqli_query($conn, $select);
 
@@ -23,12 +23,18 @@ if(isset($_POST['submit'])){
       if($row['user_type'] == 'admin'){
 
          $_SESSION['nombre_admin'] = $row['name'];
-         header('location:login_admin.php');
+         $host  = $_SERVER['HTTP_HOST'];
+         $uri   = rtrim(dirname($_SERVER['PHP_HOST']), '/\\');
+         $extra = 'login/landing.php';
+         header("Location: http://$host$uri/$extra");
 
       }elseif($row['user_type'] == 'usuario'){
 
          $_SESSION['nombre_usuario'] = $row['name'];
-         header('location:login_usuario.php');
+         $host  = $_SERVER['HTTP_HOST'];
+         $uri   = rtrim(dirname($_SERVER['PHP_HOST']), '/\\');
+         $extra = 'login/landing.php';
+         header("Location: http://$host$uri/$extra");
 
       }
      
