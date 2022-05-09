@@ -1,6 +1,8 @@
 <?php
 
-@include 'config.php';
+@include '../config.php';
+
+session_start();
 
 if(isset($_POST['add_to_cart'])){
 
@@ -12,10 +14,10 @@ if(isset($_POST['add_to_cart'])){
    $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE name = '$product_name'");
 
    if(mysqli_num_rows($select_cart) > 0){
-      $message[] = 'product already added to cart';
+      $message[] = "'$product_name' ya se encuentra en carrito!";
    }else{
       $insert_product = mysqli_query($conn, "INSERT INTO `cart`(name, price, image, quantity) VALUES('$product_name', '$product_price', '$product_image', '$product_quantity')");
-      $message[] = 'product added to cart succesfully';
+      $message[] = "'$product_name' agregado al carrito!";
    }
 
 }
@@ -54,7 +56,7 @@ if(isset($message)){
 
 <section class="products">
 
-   <h1 class="heading">latest products</h1>
+   <h1 class="heading">Productos</h1>
 
    <div class="box-container">
 
@@ -69,11 +71,11 @@ if(isset($message)){
          <div class="box">
             <img src="uploaded_img/<?php echo $fetch_product['image']; ?>" alt="">
             <h3><?php echo $fetch_product['name']; ?></h3>
-            <div class="price">$<?php echo $fetch_product['price']; ?>/-</div>
+            <div class="price">$<?php echo $fetch_product['price']; ?>MXN</div>
             <input type="hidden" name="product_name" value="<?php echo $fetch_product['name']; ?>">
             <input type="hidden" name="product_price" value="<?php echo $fetch_product['price']; ?>">
             <input type="hidden" name="product_image" value="<?php echo $fetch_product['image']; ?>">
-            <input type="submit" class="btn" value="add to cart" name="add_to_cart">
+            <input type="submit" class="btn" value="Agregar al carrito" name="add_to_cart">
          </div>
       </form>
 
