@@ -1,14 +1,11 @@
 <?php
+session_start();
+if(!isset($_SESSION['nombre_admin'])){
+    header("Location:https://adairbernal.000webhostapp.com/practica_carrito/login/login.php");
+}
 
 @include '../config.php';
 
-session_start();
-if(!isset($_SESSION['nombre_admin'])){
-   $host  = $_SERVER['HTTP_HOST'];
-   $uri   = rtrim(dirname($_SERVER['PHP_HOST']), '/\\');
-   $extra = 'login/landing.php';
-   header("Location: http://$host$uri/$extra");
-}
 if(isset($_POST['add_product'])){
    $p_name = $_POST['p_name'];
    $p_price = $_POST['p_price'];
@@ -20,7 +17,7 @@ if(isset($_POST['add_product'])){
 
    if($insert_query){
       move_uploaded_file($p_image_tmp_name, $p_image_folder);
-      $message[] = 'product agregado exitosamente';
+      $message[] = 'producto agregado exitosamente';
    }else{
       $message[] = 'no se pudo agregar el producto';
    }
@@ -31,10 +28,10 @@ if(isset($_GET['delete'])){
    $delete_query = mysqli_query($conn, "DELETE FROM `products` WHERE id = $delete_id ") or die('query failed');
    if($delete_query){
       header('location:adminpanel.php');
-      $message[] = 'product eliminado';
+      $message[] = 'producto eliminado';
    }else{
       header('location:adminpanel.php');
-      $message[] = 'product no pudo ser eliminado';
+      $message[] = 'producto no pudo ser eliminado';
    };
 };
 
@@ -45,11 +42,17 @@ if(isset($_POST['update_product'])){
    $update_p_image = $_FILES['update_p_image']['name'];
    $update_p_image_tmp_name = $_FILES['update_p_image']['tmp_name'];
    $update_p_image_folder = 'uploaded_img/'.$update_p_image;
+    
+   if(!empty($_FILES['update_p_image']['name'])){
+      $update_query = mysqli_query($conn, "UPDATE `products` SET name = '$update_p_name', price = '$update_p_price', image = '$update_p_image' WHERE id = '$update_p_id'");
+      move_uploaded_file($update_p_image_tmp_name, $update_p_image_folder);
+   }else{
+      $update_query = mysqli_query($conn, "UPDATE `products` SET name = '$update_p_name', price = '$update_p_price' WHERE id = '$update_p_id'");       
+   }
+   
 
-   $update_query = mysqli_query($conn, "UPDATE `products` SET name = '$update_p_name', price = '$update_p_price', image = '$update_p_image' WHERE id = '$update_p_id'");
 
    if($update_query){
-      move_uploaded_file($update_p_image_tmp_name, $update_p_image_folder);
       $message[] = 'producto actualizado exitosamente';
       header('location:adminpanel.php');
    }else{
@@ -86,9 +89,9 @@ if(isset($message)){
    };
 };
 
-?>
+@include 'header.php'; 
 
-<?php include 'header.php'; ?>
+?>
 
 <div class="container">
 
@@ -129,7 +132,7 @@ if(isset($message)){
             <td>$<?php echo $row['price']; ?>MXN</td>
             <td>
                <a href="adminpanel.php?delete=<?php echo $row['id']; ?>" class="delete-btn" onclick="return confirm('¿Estas seguro de eliminar esto?');"> <i class="fas fa-trash"></i> Eliminar </a>
-               <a href="adminpanel.php?edit=<?php echo $row['id']; ?>" class="option-btn"> <i class="fas fa-edit"></i> Actualizar </a>
+               <a href="adminpanel.php?edit=<?php echo $row['id']; ?>" class="option-btn"> <i class="fas fa-edit"></i> Editar </a>
             </td>
          </tr>
 
@@ -160,7 +163,7 @@ if(isset($message)){
       <input type="hidden" name="update_p_id" value="<?php echo $fetch_edit['id']; ?>">
       <input type="text" class="box" required name="update_p_name" value="<?php echo $fetch_edit['name']; ?>">
       <input type="number" min="0" class="box" required name="update_p_price" value="<?php echo $fetch_edit['price']; ?>">
-      <input type="file" class="box" required name="update_p_image" accept="image/png, image/jpg, image/jpeg">
+      <input type="file" class="box" name="update_p_image" accept="image/png, image/jpg, image/jpeg">
       <input type="submit" value="update the prodcut" name="update_product" class="btn">
       <input type="reset" value="cancel" id="close-edit" class="option-btn">
    </form>

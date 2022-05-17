@@ -1,5 +1,8 @@
 <?php
 session_start();
+if(!isset($_SESSION['nombre_admin']) && (!isset($_SESSION['nombre_usuario']))){
+    header("Location:https://adairbernal.000webhostapp.com/practica_carrito/login/login.php");
+};
 ?>
 
 <!DOCTYPE html>
@@ -19,19 +22,17 @@ session_start();
 <div class="container">
 
    <div class="content">
-      <h3>hola <span>admin</span></h3>
-      <h1>Bienvenido!! <span><?php echo $_SESSION['nombre_admin'] ?></span></h1>
-
-      <?php
-         if(isset($_SESSION['nombre_admin'])){
-            echo ('<p>Esta es la pagina de administrador</p>');
-         }
-         else{
-            echo ('<p>Esta es la pagina de usuario</p>');
-         }
-      ?>
       <?php if(isset($_SESSION['nombre_admin'])) : ?>
-         <a href="../menu/adminpanel.php" class="btn">Agregar Productos</a>
+        <h3>Hola <span>Admin</span></h3>
+        <h1>Bienvenido!! <span><?php echo $_SESSION['nombre_admin'] ?></span></h1>
+        <p>Esta es la pagina de administrador</p>
+        <a href="../menu/adminpanel.php" class="btn">Agregar Productos</a>
+      <?php endif ?>
+      
+      <?php if(isset($_SESSION['nombre_usuario'])) : ?>
+        <h3>Hola</h3>
+        <h1>Bienvenido!! <span><?php echo $_SESSION['nombre_usuario'] ?></span></h1>
+        <p>Esta es la pagina de usuario</p>
       <?php endif ?>
 
       <a href="../menu/products.php" class="btn">Comprar</a>
