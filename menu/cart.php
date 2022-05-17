@@ -1,16 +1,16 @@
 <?php
+session_start();
+if(!isset($_SESSION['nombre_admin']) && (!isset($_SESSION['nombre_usuario']))){
+    header("Location:https://adairbernal.000webhostapp.com/practica_carrito/login/login.php");
+};
 
 @include '../config.php';
-
-session_start();
 
 if(isset($_POST['update_update_btn'])){
    $update_value = $_POST['update_quantity'];
    $update_id = $_POST['update_quantity_id'];
    $update_quantity_query = mysqli_query($conn, "UPDATE `cart` SET quantity = '$update_value' WHERE id = '$update_id'");
-   if($update_quantity_query){
-      header('location:cart.php');
-   };
+    header('location:cart.php');
 };
 
 if(isset($_GET['remove'])){
@@ -24,7 +24,25 @@ if(isset($_GET['delete_all'])){
    header('location:cart.php');
 }
 
+$usuario = "";
+$email = "";
+
+if(isset($_SESSION['nombre_admin'])){
+    $usuario = $_SESSION['nombre_admin'];
+    $sqlres = mysqli_query($conn, "SELECT email from users where name = '$usuario'");
+    $emailRow = mysqli_fetch_array($sqlres);
+    $email = $emailRow["email"];
+}else{
+    $usuario = $_SESSION['nombre_usuario'];
+    $sqlres = mysqli_query($conn, "SELECT email from users where name = '$usuario'");
+    $emailRow = mysqli_fetch_array($sqlres);
+    $email = $emailRow["email"];
+
+}
+
+@include 'header.php'; 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -42,8 +60,6 @@ if(isset($_GET['delete_all'])){
 
 </head>
 <body>
-
-<?php include 'header.php'; ?>
 
 <div class="container">
 
@@ -66,8 +82,8 @@ if(isset($_GET['delete_all'])){
 
          <?php 
          
-         $select_cart = mysqli_query($conn, "SELECT * FROM `cart`");
-         $grand_total = 0;
+         $select_cart = mysqli_query($conn, "SELECT * FROM `cart` where user = '$email'");
+         $grand_total = number_format(0);
          if(mysqli_num_rows($select_cart) > 0){
             while($fetch_cart = mysqli_fetch_assoc($select_cart)){
          ?>
@@ -83,7 +99,7 @@ if(isset($_GET['delete_all'])){
                   <input type="submit" value="update" name="update_update_btn">
                </form>   
             </td>
-            <td>$<?php echo $sub_total = number_format($fetch_cart['price'] * $fetch_cart['quantity']); ?>MXN</td>
+            <td>$<?php echo number_format($sub_total = $fetch_cart['price'] * $fetch_cart['quantity']); ?>MXN</td>
             <td><a href="cart.php?remove=<?php echo $fetch_cart['id']; ?>" onclick="return confirm('¿Quitar articulo del carrito?')" class="delete-btn"> <i class="fas fa-trash"></i> Eliminar</a></td>
          </tr>
          <?php
@@ -94,7 +110,7 @@ if(isset($_GET['delete_all'])){
          <tr class="table-bottom">
             <td><a href="products.php" class="option-btn" style="margin-top: 0;">Seguir comprando</a></td>
             <td colspan="3">Total</td>
-            <td>$<?php echo $grand_total; ?>MXN</td>
+            <td>$<?php echo number_format($grand_total); ?>MXN</td>
             <td><a href="cart.php?delete_all" onclick="return confirm('¿Estas seguro de eliminar tu carrito?');" class="delete-btn"> <i class="fas fa-trash"></i> Eliminar carrito </a></td>
          </tr>
 

@@ -1,8 +1,10 @@
 <?php
+session_start();
+if(!isset($_SESSION['nombre_admin']) && (!isset($_SESSION['nombre_usuario']))){
+    header("Location:https://adairbernal.000webhostapp.com/practica_carrito/login/login.php");
+};
 
 @include '../config.php';
-
-session_start();
 
 if(isset($_POST['order_btn'])){
 

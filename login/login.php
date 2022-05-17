@@ -2,45 +2,31 @@
 
 @include '../config.php';
 
-session_start();
-
 if(isset($_POST['submit'])){
 
-   $name = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $pass = md5($_POST['password']);
-   $cpass = md5($_POST['cpassword']);
-   $user_type = $_POST['user_type'];
 
    $select = " SELECT * FROM users WHERE email = '$email' && password = '$pass' ";
 
    $result = mysqli_query($conn, $select);
 
    if(mysqli_num_rows($result) > 0){
-
+       
+      session_start();
       $row = mysqli_fetch_array($result);
 
       if($row['user_type'] == 'admin'){
-
          $_SESSION['nombre_admin'] = $row['name'];
-         $host  = $_SERVER['HTTP_HOST'];
-         $uri   = rtrim(dirname($_SERVER['PHP_HOST']), '/\\');
-         $extra = 'login/landing.php';
-         header("Location: http://$host$uri/$extra");
-
+         header("Location:https://adairbernal.000webhostapp.com/practica_carrito/menu/products.php");
       }elseif($row['user_type'] == 'usuario'){
-
          $_SESSION['nombre_usuario'] = $row['name'];
-         $host  = $_SERVER['HTTP_HOST'];
-         $uri   = rtrim(dirname($_SERVER['PHP_HOST']), '/\\');
-         $extra = 'login/landing.php';
-         header("Location: http://$host$uri/$extra");
-
-      }
+         header("Location:https://adairbernal.000webhostapp.com/practica_carrito/menu/products.php");
+      };
      
    }else{
       $error[] = 'Correo o contraseña incorrectos :(';
-   }
+   };
 
 };
 ?>
